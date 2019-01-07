@@ -61,8 +61,3 @@ class AreaFilter(object):
                     intersection = self.geo.buffer(0).intersection(area_geo.buffer(0))
                 if intersection.area/area_geo.area > 0.1:
                     yield area
-
-#testing testing
-#changes
-print("testing")
-print("testingtesting123")
