@@ -6,11 +6,11 @@ import re
 
 import census
 from census.core import supported_years
-import census.math
+# import census.math
 import esridump
 
-from .lodes import OnTheMap
-from .core import AreaFilter, GEO_URLS
+from lodes import OnTheMap
+from core import AreaFilter, GEO_URLS
 
 try:  # Python 2.7+
     from logging import NullHandler
@@ -28,10 +28,10 @@ class GeoClient(census.core.Client):
         if year is None:
             year = self.default_year
         
-        filtered_tracts, weight = AreaFilter(geojson_geometry,
+        filtered_tracts = AreaFilter(geojson_geometry,
                                      GEO_URLS['tracts'][self.default_year])
 
-        for tract in filtered_tracts:
+        for tract, weight in filtered_tracts:
             context = {'state' : tract['properties']['STATE'],
                        'county' : tract['properties']['COUNTY']}
             within = 'state:{state} county:{county}'.format(**context)
@@ -81,7 +81,7 @@ class GeoClient(census.core.Client):
             year = self.default_year
         
         search_query = "PLACE='{}' AND STATE={}".format(place, state)
-        place_dumper = esridump.EsriDumper(GEO_URLS['incorporated places'][year],
+        place_dumper = esridump.EsriDumper(GEO_URLS['`incorporated places'][year],
                                            extra_query_args = {'where' : search_query,
                                                                'orderByFields': 'OID'})
 

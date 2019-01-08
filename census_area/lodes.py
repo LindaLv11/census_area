@@ -5,13 +5,13 @@ import functools
 
 import requests
 import zipfile
-import shapefile
+# import shapefile
 import shapely.geometry
 import shapely.ops
 import pyproj
 
-from .core import AreaFilter, GEO_URLS
-from .variables import LODES_VARIABLES
+from core import AreaFilter, GEO_URLS
+from variables import LODES_VARIABLES
 
 class OnTheMap(requests.Session):
     BASE = 'https://onthemap.ces.census.gov'
