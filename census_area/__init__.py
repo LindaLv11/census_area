@@ -28,7 +28,7 @@ class GeoClient(census.core.Client):
         if year is None:
             year = self.default_year
         
-        filtered_tracts = AreaFilter(geojson_geometry,
+        filtered_tracts, weight = AreaFilter(geojson_geometry,
                                      GEO_URLS['tracts'][self.default_year])
 
         for tract in filtered_tracts:
@@ -46,7 +46,7 @@ class GeoClient(census.core.Client):
             else:
                 result = {}
 
-            yield tract, result
+            yield tract, result, weight
 
     @supported_years(2015, 2014, 2013, 2012, 2011, 2010, 2000)
     def geo_blockgroup(self, fields, geojson_geometry, year=None, **kwargs):
@@ -56,7 +56,7 @@ class GeoClient(census.core.Client):
         filtered_block_groups = AreaFilter(geojson_geometry,
                                            GEO_URLS['block groups'][year])
 
-        for block_group in filtered_block_groups:
+        for block_group, weight in filtered_block_groups:
             context = {'state' : block_group['properties']['STATE'],
                        'county' : block_group['properties']['COUNTY'],
                        'tract' : block_group['properties']['TRACT']}
@@ -73,7 +73,7 @@ class GeoClient(census.core.Client):
             else:
                 result = {}
 
-            yield block_group, result
+            yield block_group, result, weight
 
 
     def _state_place_area(self, method, fields, state, place, year=None, return_geometry=False, **kwargs):
@@ -194,7 +194,7 @@ class SF1Client(census.core.SF1Client, GeoClient):
         filtered_blocks = AreaFilter(geojson_geometry,
                                      GEO_URLS['blocks'][year])
 
-        for block in filtered_blocks:
+        for block, weight in filtered_blocks:
             context = {'state' : block['properties']['STATE'],
                        'county' : block['properties']['COUNTY'],
                        'tract' : block['properties']['TRACT']}
@@ -210,7 +210,7 @@ class SF1Client(census.core.SF1Client, GeoClient):
             else:
                 result = {}
 
-            yield block, result
+            yield block, result, weight
 
 
 class SF3Client(census.core.SF3Client, GeoClient):

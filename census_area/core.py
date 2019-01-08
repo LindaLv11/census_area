@@ -60,4 +60,5 @@ class AreaFilter(object):
                 except shapely.geos.TopologicalError:
                     intersection = self.geo.buffer(0).intersection(area_geo.buffer(0))
                 if intersection.area/area_geo.area > 0.1:
-                    yield area
+                    weight = intersection.area/area_geo.area 
+                    yield area, weight
