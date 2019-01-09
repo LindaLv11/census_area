@@ -7,6 +7,7 @@ from shapely.geometry import Polygon
 from shapely.geometry import Point
 import json
 import pandas
+from math import sqrt
 
 MY_API_KEY = '475e7ac8120a6caa3641a5bb4b305ac92128eaac'
 
@@ -15,14 +16,14 @@ with open(fname) as infile:
     my_shape_geojson = json.load(infile)
 
 
-def func(MY_API_KEY, target_variable): 
+def func(MY_API_KEY, target_variable, MoE_variable): 
     
     c = Census(MY_API_KEY, year = 2010)
     features = []
     pop_variable = 'B01003_001E'
-    old_homes = c.acs5.geo_tract(('NAME',pop_variable, target_variable), my_shape_geojson['features'][0]['geometry'])
+    old_homes = c.acs5.geo_tract(('NAME',pop_variable, target_variable, MoE_variable), my_shape_geojson['features'][0]['geometry'])
     weight = {}
-    population, total_sum = 0, 0
+    population, moe_square= 0, 0
     variables = []
     for tract_geojson, tract_data, wei in old_homes:
         points = []
@@ -38,18 +39,31 @@ def func(MY_API_KEY, target_variable):
         weight[weight_id]['popu_intersect'] = wei * tract_data[pop_variable]
         weight[weight_id]['variable_whole'] = tract_data[target_variable]
         population += weight[weight_id]['popu_intersect']
-        
+        moe_square += tract_data[MoE_variable] ** 2
+
+    # calclate the population weight in another for loop:            
     for wei_ids in weight:
+    
         weight[wei_ids]['popul_weight'] = weight[wei_ids]['popu_intersect'] / population
-        
-    average = 0
+
+
+    # calculate the statistic in a new for loop.
+    average, total_sum = 0, 0
     for wei_ids in weight:
-        average += weight[wei_ids]['variable_whole'] *  weight[wei_ids]['popul_weight'] * weight[wei_ids]['areal_weight'] 
+        # if target_variable_weight == 'Areal':
+        #     weight[weight_id]['variable_intersection'] = tract_data[target_variable] * wei
+        # if target_variable_weight == 'Population':
+        #     weight[weight_id]['variable_intersection'] = tract_data[target_variable] * weight[wei_ids]['popul_weight'] 
+        # else:
+        #     raise ValueError('the name of the weight has to be Population or Areal')
+            
+        # calculate a simple average in this for loop:
+        # multiply population weight and areal weight
+        weight[wei_ids]['variable_intersection'] = weight[wei_ids]['variable_whole'] * weight[wei_ids]['areal_weight']
+        average += weight[wei_ids]['variable_whole'] *  weight[wei_ids]['popul_weight'] * weight[wei_ids]['areal_weight']
+        total_sum += weight[wei_ids]['variable_intersection']
+            
+    moe = sqrt(moe_square)
+    
 
-    return (population, average)
-
-
-
-
-print('totoal in this area:')
-print(func(MY_API_KEY,  'B25034_010E'))
+    return (population, average, moe, total_sum)
