@@ -19,6 +19,8 @@ c = Census(MY_API_KEY, year = 2010)
 features = []
 old_homes = c.acs5.geo_tract(('NAME','B01003_001E', 'B25034_010E'), my_shape_geojson['features'][0]['geometry'])
 weight = {}
+population, total_sum = 0, 0
+variables = []
 for tract_geojson, tract_data, wei in old_homes:
     points = []
     for point in tract_geojson['geometry']['coordinates'][0]:
@@ -30,4 +32,18 @@ for tract_geojson, tract_data, wei in old_homes:
     weight[weight_id]['population'] = tract_data['B01003_001E']
     weight[weight_id]['geometry'] =  Polygon(points)
     weight[weight_id]['areal_weight'] = wei
-# a = AreaFilter()
+    weight[weight_id]['popu_intersect'] = wei * tract_data['B01003_001E']
+    weight[weight_id]['variable_whole'] = tract_data['B25034_010E']
+    population += weight[weight_id]['popu_intersect']
+    
+for wei_ids in weight:
+    weight[wei_ids]['popul_weight'] = weight[wei_ids]['popu_intersect'] / population
+    
+average = 0
+for wei_ids in weight:
+    average += weight[wei_ids]['variable_whole'] *  weight[wei_ids]['popul_weight'] * weight[wei_ids]['areal_weight'] 
+
+print('totoal in this area:')
+print(population)
+print('average in this area:')
+print(average)
