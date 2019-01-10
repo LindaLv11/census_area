@@ -9,7 +9,7 @@ import json
 import pandas
 from math import sqrt
 
-MY_API_KEY = '475e7ac8120a6caa3641a5bb4b305ac92128eaac'
+MY_API_KEY = #INSERT API KEY
 
 fname = 'census_area/census_area/water_district_boundary_sample.geojson'
 with open(fname) as infile:
