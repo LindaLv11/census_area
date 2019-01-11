@@ -1,1 +1,4 @@
-test.py is code to calcualate average statistic for a given geographical boundry 
+test.py includes a function code to calcualate statistics for a target variable for a given geographical boundry
+
+The inputs are MY_API_KEY, target_variable, MoE_variable
+The outputs are population, average, moe, total_sum
