@@ -91,7 +91,3 @@ def variable_reaggregagion(census_API_key, target_variable, geometry, type_of_st
         return moe
     else:
         raise ValueError('incorrect type_of_aggregation')
-
-    
-    
-# func(MY_API_KEY, target_variable, MoE_variable, my_shape_geojson)
