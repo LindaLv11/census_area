@@ -1,0 +1,16 @@
+Currently the code to run is in test.py
+
+
+
+This Python library extends the Sunlight Foundation's Census API Wrapper to allow querying Census tracts, block groups, and blocks by Census place, as well as by arbitrary geographies.
+The core function takes on the following format:
+
+def variable_reaggregation(census_API_key, target_variable, geometry, type_of_aggregation, type_of_statistic):
+There are 5 inputs the user must specify: 
+census_API_key: The user’s API key, can be requested at _____
+geometry: the name of the file of the desired geometry for the variable aggregation, for example Water District 10. Make sure to have this in a geojson file format and the polygon be referred to through this path geometry['features'][0]['geometry']. 
+type_of_statistic: The 3 options are ‘count’, ‘per_capita’, ’per_household’ and the user must input one of these. 
+For count we use the percentage of the census tract area that intersects with the input geometry to create an estimate of the target variable for the specified geometry. For per_capita statistics we use the estimated census tract population that intersects with the input geometry to create an estimate of the target variable for the specified geometry.  For per_household statistics we use the estimated household count of the census tracts that intersect with the input geometry, to create an estimate of the target variable for the specified geometry. 
+type_of_aggregation: The 3 options are ‘sum’, ‘average’, and ‘moe_sum’ and the user must input one of these. Sum is the total of the target variable in the specified geometry.. 
+Average is the average of the target variable in the specified geometry.
+Moe_sum is the sum of the margin of error in the specified geometry.. 

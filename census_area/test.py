@@ -1,5 +1,5 @@
 from core import *
-from __init__ import *
+from _init_ import *
 from lodes import *
 from variables import *
 from shapely.geometry import LineString
