@@ -26,4 +26,4 @@ Average is the average of the target variable in the specified geometry.
 Year: year of census. 4 digits. The years availible are 2015, 2014, 2013, 2012, 2011, 2010, 2000 and 1990
 
 Here is an example of how to run the class
-reaggregagion().variable_reaggregagion('e5b8a68f3da8d31bbb9d887ae665a2590c83c523', 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
+reaggregagion().variable_reaggregagion(API_KEY, 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
