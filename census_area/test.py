@@ -5,19 +5,15 @@ from variables import *
 from shapely.geometry import LineString
 from shapely.geometry import Polygon
 from shapely.geometry import Point
-import json
-from math import sqrt
-import requests
-import json
-import numpy as np
 
 
-# test example of geometry
+#test example of geometry
 # fname = 'census_area/census_area/water_district_boundary_sample.geojson'
 # with open(fname) as infile:
 #     my_shape_geojson = json.load(infile)
 
 # Geometry should be a water district json file
+
 class reaggregagion(object):
     '''
     census_API_key is the API key
@@ -27,6 +23,10 @@ class reaggregagion(object):
     type of aggregation can be: count : sum, per_capita/ per_household:  average.
     year is the year of the census
     '''
+    import json
+    from math import sqrt
+    import requests
+    import numpy as np
         
     def variable_reaggregagion(self, census_API_key, target_variable, geometry, type_of_statistic, year):
 
@@ -37,12 +37,12 @@ class reaggregagion(object):
         pop_variable = 'B01003_001E'
         household_variable = 'B08201_001E'
         
-        old_homes = c.acs5.geo_tract(('NAME', pop_variable, household_variable, target_variable, MoE_variable), geometry['features'][0]['geometry'])
+        census_geo_var = c.acs5.geo_tract(('NAME', pop_variable, household_variable, target_variable, MoE_variable), geometry['features'][0]['geometry'])
         weight = {}
         population, moe_square= 0, 0
         variables = []
         total_household = 0
-        for tract_geojson, tract_data, wei in old_homes:
+        for tract_geojson, tract_data, wei in census_geo_var:
             points = []
             for point in tract_geojson['geometry']['coordinates'][0]:
                 points.append((point))
@@ -50,16 +50,25 @@ class reaggregagion(object):
             weight_id = tract_data['tract']
             weight[weight_id] = {}
             weight[weight_id]['area_in_tract'] =  tract_area
+            # population of the census tract area
             weight[weight_id]['population'] = tract_data[pop_variable]
+            
             weight[weight_id]['geometry'] =  Polygon(points)
+            # areal_weight : the percentage of the intersect area 
             weight[weight_id]['areal_weight'] = wei
+            # population_intersect is calculated based on areal weight. we assume that the population is evenly distributed .
             weight[weight_id]['popu_intersect'] = wei * tract_data[pop_variable]
             
+            # household_intersect is calculated based on areal weight. We assume that the houses are evenly distributed.
             weight[weight_id]['household_intersect'] = tract_data[household_variable] * wei
             
+            # variable_whole is the statistics of the census tract.
+            
             weight[weight_id]['variable_whole'] = tract_data[target_variable]
+            # calculating the whole population
             population += weight[weight_id]['popu_intersect']
-            moe_square += tract_data[MoE_variable] ** 2
+            # moe_square += tract_data[MoE_variable] ** 2
+            # calculating the total household
             total_household += weight[weight_id]['household_intersect']
             
         # calclate the population weight and the household weight in another for loop:            
@@ -89,29 +98,27 @@ class reaggregagion(object):
                 weight[wei_ids]['variable_intersection'] = weight[wei_ids]['variable_whole'] * weight[wei_ids]['household_weight']
         else:
             raise ValueError('incorrect type_of_statistic')
-         
-        average, total_sum = 0, 0    
-        if type_of_aggregation == 'sum':
-            for wei_ids in weight:
-                total_sum += weight[wei_ids]['variable_intersection']
-            print('total_sum:')
-            print(total_sum)
-            # return
-        
-        if type_of_aggregation == 'average':
-            for wei_ids in weight:
-                average += weight[wei_ids]['variable_whole'] *  weight[wei_ids]['popul_weight'] * weight[wei_ids]['areal_weight']
-            print('average:')
-            print(average)
-            # return
-    
-    
-    
+            
+        # label of the target
         url = 'https://api.census.gov/data/' + str(year) + '/acs/acs5/variables.json'
         resp = requests.request('GET', url)
         aff1y = json.loads(resp.text)
         affkeys = np.array(list(aff1y['variables'].keys()))
-        print(aff1y['variables'][target_variable]['label'])
+        
+        
+        average, total_sum = 0, 0    
+        if type_of_aggregation == 'sum':
+            for wei_ids in weight:
+                total_sum += weight[wei_ids]['variable_intersection']
+            return (type_of_statistic, type_of_aggregation, total_sum, aff1y['variables'][target_variable]['label'])
+        
+        
+        if type_of_aggregation == 'average':
+            for wei_ids in weight:
+                average += weight[wei_ids]['variable_whole'] *  weight[wei_ids]['popul_weight'] * weight[wei_ids]['areal_weight']
+            return (type_of_statistic, type_of_aggregation, average, aff1y['variables'][target_variable]['label'])
+           
+
         return
         
         # if type_of_aggregation == 'moe_sum':
@@ -120,4 +127,4 @@ class reaggregagion(object):
         # else:
         #     raise ValueError('incorrect type_of_aggregation')
         
-#reaggregagion().variable_reaggregagion('API_KEY', 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
+#print(reaggregagion().variable_reaggregagion('API KEY', 'B19301_001E', my_shape_geojson, 'per_capita', 1883))
