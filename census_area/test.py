@@ -119,6 +119,3 @@ class reaggregagion(object):
         #     return moe
         # else:
         #     raise ValueError('incorrect type_of_aggregation')
-
-# reaggregagion().variable_reaggregagion('e5b8a68f3da8d31bbb9d887ae665a2590c83c523', 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
-
