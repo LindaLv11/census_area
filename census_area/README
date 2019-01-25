@@ -7,7 +7,7 @@ The core function takes on the following format:
 
 def variable_reaggregation(census_API_key, target_variable, geometry, type_of_aggregation, type_of_statistic):
 
-There are 5 inputs the user must specify: 
+There are 6 inputs the user must specify: 
 
 census_API_key: The user’s API key, can be requested at https://api.census.gov/data/key_signup.html
 
@@ -21,3 +21,5 @@ type_of_aggregation: The 3 options are ‘sum’, ‘average’, and ‘moe_sum�
 Average is the average of the target variable in the specified geometry.
 
 Moe_sum is the sum of the margin of error in the specified geometry.. 
+
+Year: year of census. 4 digits
