@@ -12,10 +12,10 @@ import json
 import numpy as np
 
 
-
-fname = 'census_area/census_area/water_district_boundary_sample.geojson'
-with open(fname) as infile:
-    my_shape_geojson = json.load(infile)
+# test example of geometry
+# fname = 'census_area/census_area/water_district_boundary_sample.geojson'
+# with open(fname) as infile:
+#     my_shape_geojson = json.load(infile)
 
 # Geometry should be a water district json file
 class reaggregagion(object):
@@ -119,3 +119,5 @@ class reaggregagion(object):
         #     return moe
         # else:
         #     raise ValueError('incorrect type_of_aggregation')
+        
+#reaggregagion().variable_reaggregagion('API_KEY', 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
