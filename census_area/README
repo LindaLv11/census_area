@@ -3,6 +3,7 @@ Currently the code to run is in test.py
 This Python library extends the Sunlight Foundation's Census API Wrapper to allow querying Census tracts, block groups, and blocks by Census place, as well as by arbitrary geographies.
 
 To run this you must make an instance of the class 'reaggregation', and call the function 'variable_reaggregation'
+You must have the libraries numpy, requests, json and math installed.
 
 The core function takes on the following format:
 
@@ -22,7 +23,7 @@ For count we use the percentage of the census tract area that intersects with th
 Sum is the total of the target variable in the specified geometry.
 Average is the average of the target variable in the specified geometry.
 
-Year: year of census. 4 digits. The years availible are 1999
+Year: year of census. 4 digits. The years availible are 2015, 2014, 2013, 2012, 2011, 2010, 2000 and 1990
 
 Here is an example of how to run the class
-reaggregagion().variable_reaggregagion('e5b8a68f3da8d31bbb9d887ae665a2590c83c523', 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
+reaggregagion().variable_reaggregagion(API_KEY, 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
