@@ -22,7 +22,7 @@ For count we use the percentage of the census tract area that intersects with th
 Sum is the total of the target variable in the specified geometry.
 Average is the average of the target variable in the specified geometry.
 
-Year: year of census. 4 digits
+Year: year of census. 4 digits. The years availible are 1999
 
 Here is an example of how to run the class
 reaggregagion().variable_reaggregagion('e5b8a68f3da8d31bbb9d887ae665a2590c83c523', 'B19301_001E', my_shape_geojson, 'per_capita', 2015)
